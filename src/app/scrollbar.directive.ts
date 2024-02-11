@@ -61,10 +61,12 @@ export class ScrollbarDirective {
     this.renderer.setStyle(this.rightDivision, 'background-color', '#e8f4fa');
     
     this.renderer.appendChild(this.elementRef.nativeElement.parentElement, this.rightDivision);
+    // Calculate the height of the inner division (25% of parentScrollHeight)
+    const innerDivisionHeight = parseFloat(this.parentScrollHeight) * 0.25;
 
       // Create the inner division with a height of 300px
     const innerDivision = this.renderer.createElement('div');
-    this.renderer.setStyle(innerDivision, 'height', '100px');
+    this.renderer.setStyle(innerDivision, 'height', innerDivisionHeight + 'px');
     this.renderer.setStyle(innerDivision, 'cursor', 'pointer');
     this.renderer.setStyle(innerDivision, 'width', '11px');
     this.renderer.setStyle(innerDivision, 'border-radius', '5px'); // Set border radius
