@@ -52,15 +52,15 @@ export class ScrollbarDirective {
     this.renderer.setStyle(this.elementRef.nativeElement, '-webkit-scrollbar', 'none'); // Hide scrollbar in Webkit
   }
   private createRightDivision() {
-    this.rightDivision = this.renderer.createElement('div');
+ 
     this.renderer.addClass(this.rightDivision, 'right-division');
     this.renderer.setStyle(this.rightDivision, 'display', 'flex');
     this.renderer.setStyle(this.rightDivision, 'float', 'right'); 
     this.renderer.setStyle(this.rightDivision, 'width', '14px'); 
     this.renderer.setStyle(this.rightDivision, 'height', this.parentScrollHeight); 
-    this.renderer.setStyle(this.rightDivision, 'background-color', '#e8f4fa');
-    
+ 
     this.renderer.appendChild(this.elementRef.nativeElement.parentElement, this.rightDivision);
+    this.renderer.setStyle(this.rightDivision, 'background-color', 'transparent'); 
     // Calculate the height of the inner division (25% of parentScrollHeight)
     const innerDivisionHeight = parseFloat(this.parentScrollHeight) * 0.25;
 
@@ -72,7 +72,7 @@ export class ScrollbarDirective {
     this.renderer.setStyle(innerDivision, 'border-radius', '5px'); // Set border radius
     this.renderer.setStyle(innerDivision, 'background-color', '#d2e8f5'); // Adjust color as needed
     this.renderer.appendChild(this.rightDivision, innerDivision);
-
+    this.renderer.setStyle(innerDivision, 'display', 'none');
  const nativeElement = this.elementRef.nativeElement;
 
  // Add a scroll event listener to the native element
@@ -93,11 +93,15 @@ export class ScrollbarDirective {
 //Add mouseover event listener to the right division
 this.renderer.listen(this.rightDivision, 'mouseover', () => {
   this.isHovering = true;
+  this.renderer.setStyle(innerDivision, 'display', 'flex');
+  this.renderer.setStyle(this.rightDivision, 'background-color', '#e8f4fa');
 });
 
 //Add mouseout event listener to the right division
 this.renderer.listen(this.rightDivision, 'mouseout', () => {
   this.isHovering = false;
+  this.renderer.setStyle(innerDivision, 'display', 'none');
+  this.renderer.setStyle(this.rightDivision, 'background-color', 'transparent');
 });
 
 this.renderer.listen(this.rightDivision, 'wheel', (event: WheelEvent) => {
@@ -151,7 +155,18 @@ this.renderer.listen(this.rightDivision, 'wheel', (event: WheelEvent) => {
     this.elementRef.nativeElement.scrollTop = scrollPosition;
   });
   
-  
+  // Add mouse enter and mouse leave event listeners to show/hide the right division
+this.renderer.listen(this.elementRef.nativeElement, 'mouseenter', () => {
+  this.renderer.setStyle(this.rightDivision, 'background-color', '#e8f4fa');
+  this.renderer.setStyle(innerDivision, 'display', 'flex');
+});
+
+this.renderer.listen(this.elementRef.nativeElement, 'mouseleave', () => {
+  this.renderer.setStyle(this.rightDivision, 'background-color', 'transparent');
+  this.renderer.setStyle(innerDivision, 'display', 'none');
+});
+
+
   }
  
 
