@@ -130,8 +130,6 @@ this.renderer.listen(this.rightDivision, 'wheel', (event: WheelEvent) => {
       const deltaY = event.clientY - this.startY;
       const scrollAmount = deltaY * 0.1; 
       this.elementRef.nativeElement.scrollTop += scrollAmount;
-      console.log('this.startTop',this.startTop)
-      console.log('deltaY',deltaY);
       innerDivision.style.top = event.clientY - (innerDivision.clientHeight / 2) + 'px';
     }
   });
