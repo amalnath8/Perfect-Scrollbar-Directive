@@ -68,7 +68,6 @@ export class ScrollbarDirective {
     const innerDivisionHeight = parseFloat(this.parentScrollHeight) * 0.25;
 
       // Create the inner division with a height of 300px
-    //const innerDivision = this.renderer.createElement('div');
     this.renderer.setStyle(this.innerDivision, 'height', innerDivisionHeight + 'px');
     this.renderer.setStyle(this.innerDivision, 'cursor', 'pointer');
     this.renderer.setStyle(this.innerDivision, 'width', '11px');
@@ -76,10 +75,10 @@ export class ScrollbarDirective {
     this.renderer.setStyle(this.innerDivision, 'background-color', '#d2e8f5'); // Adjust color as needed
     this.renderer.appendChild(this.rightDivision, this.innerDivision);
     this.renderer.setStyle(this.innerDivision, 'display', 'none');
- const nativeElement = this.elementRef.nativeElement;
+    const nativeElement = this.elementRef.nativeElement;
 
- // Add a scroll event listener to the native element
- this.renderer.listen(nativeElement, 'scroll', () => {
+   // Add a scroll event listener to the native element
+   this.renderer.listen(nativeElement, 'scroll', () => {
    // Calculate the new position of the inner division based on the scroll position of the native element
    const scrollPercentage = nativeElement.scrollTop / (nativeElement.scrollHeight - nativeElement.clientHeight);
    const maxTop = this.rightDivision.clientHeight - this.innerDivision.clientHeight;
@@ -198,7 +197,7 @@ this.renderer.listen(this.elementRef.nativeElement, 'mouseleave', () => {
 
   }
   // Helper function to check if the inner division is clicked
-private isInnerDivisionClicked(event: MouseEvent): boolean {
+  private isInnerDivisionClicked(event: MouseEvent): boolean {
   return this.innerDivision.contains(event.target as Node);
 }
 
