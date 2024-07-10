@@ -51,7 +51,7 @@ export class ScrollbarDirective {
     this.renderer.setStyle(this.elementRef.nativeElement, 'scrollbar-color', 'transparent'); // Firefox
     this.renderer.setStyle(this.elementRef.nativeElement, 'overflow-y', 'scroll'); // Trigger for Webkit
     this.renderer.setStyle(this.elementRef.nativeElement, 'overflow-y', 'scroll'); // Trigger for Webkit
-    this.renderer.setStyle(this.elementRef.nativeElement, '-webkit-overflow-scrolling', 'touch'); // Smooth scrolling in iOS
+    this.renderer.setStyle(this.elementRef.nativeElement, '-webkit-overflow-scrolling', 'touch'); // Smooth scrolling mobile device
     this.renderer.setStyle(this.elementRef.nativeElement, '-webkit-scrollbar', 'none'); // Hide scrollbar in Webkit
   }
   private createRightDivision() {
@@ -69,7 +69,8 @@ export class ScrollbarDirective {
 
       // Create the inner division with a height of 300px
     this.renderer.setStyle(this.innerDivision, 'height', innerDivisionHeight + 'px');
-    this.renderer.setStyle(this.innerDivision, 'cursor', 'pointer');
+    this.renderer.addClass(this.innerDivision, 'inner-division');
+    //this.renderer.setStyle(this.innerDivision, 'cursor', 'pointer');
     this.renderer.setStyle(this.innerDivision, 'width', '11px');
     this.renderer.setStyle(this.innerDivision, 'border-radius', '5px'); // Set border radius
     this.renderer.setStyle(this.innerDivision, 'background-color', '#d2e8f5'); // Adjust color as needed
@@ -112,7 +113,7 @@ this.renderer.listen(this.rightDivision, 'mouseout', () => {
 this.renderer.listen(this.rightDivision, 'wheel', (event: WheelEvent) => {
   if (this.isHovering && event.deltaY !== 0) {
     if (!this.isDragging) {
-      const scrollAmount = event.deltaY * .2; 
+      const scrollAmount = event.deltaY * .9; 
       this.elementRef.nativeElement.scrollTop += scrollAmount;
     }
   }
@@ -120,10 +121,20 @@ this.renderer.listen(this.rightDivision, 'wheel', (event: WheelEvent) => {
 
    // Add mouse event listeners for dragging
    this.renderer.listen(this.innerDivision, 'mousedown', (event: MouseEvent) => {
+    console.log('dragging');
+    const focusedElement = document.activeElement;
+    console.log('focus elemnt',focusedElement);
+    
+    if (focusedElement) {
+        const elementClass = focusedElement.classList.value;
+        console.log('Class of the focused element:', elementClass);
+    } else {
+        console.log('No element is currently focused.');
+    }
     this.startY = event.clientY;
     this.startTop = this.innerDivision.offsetTop;
     this.maxTop = this.rightDivision.clientHeight - this.innerDivision.clientHeight;
-   this.minTop = 0;
+    this.minTop = 0;
     this.isDragging = true;
     this.renderer.addClass(document.body, 'dragging');
     event.preventDefault(); 
@@ -159,11 +170,7 @@ this.renderer.listen(this.rightDivision, 'wheel', (event: WheelEvent) => {
     }
   });
 
-  this.renderer.listen(this.innerDivision, 'mouseout', () => {
-   this.isDragging = false;
-    this.renderer.removeClass(document.body, 'dragging');
-  });
-  
+
 // If the click is on the mouse drag rail, then scroll the content to the clicked position 
 this.renderer.listen(this.rightDivision, 'mousedown', (event: MouseEvent) => {
   if (!this.isInnerDivisionClicked(event)) {
@@ -177,7 +184,17 @@ this.renderer.listen(this.rightDivision, 'mousedown', (event: MouseEvent) => {
 this.renderer.listen(this.innerDivision, 'mousedown', (event: MouseEvent) => {
   // Prevent propagation to the parent element
   event.stopPropagation();
+});
+this.renderer.listen(this.innerDivision, 'click', () => {
+  // Focus the inner division
+  const focusedElement = document.activeElement as HTMLElement;
+  if (focusedElement) {
+      focusedElement.blur();
+  }
+
   this.innerDivision.focus();
+  console.log('innerdivisonclick');
+  
 });
 
 
