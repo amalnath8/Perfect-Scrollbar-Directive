@@ -93,22 +93,22 @@ export class ScrollbarDirective {
    nativeElement.scrollTop = newScrollTop;
  });
 
-//Add mouseover event listener to the right division
-this.renderer.listen(this.rightDivision, 'mouseover', () => {
-  clearTimeout(this.hideTimeout); // Clear the timeout to prevent hiding
-  this.isHovering = true;
-  this.renderer.setStyle(this.innerDivision, 'display', 'flex');
-  this.renderer.setStyle(this.rightDivision, 'background-color', '#e8f4fa');
-});
+  //Add mouseover event listener to the right division
+  this.renderer.listen(this.rightDivision, 'mouseover', () => {
+    clearTimeout(this.hideTimeout); // Clear the timeout to prevent hiding
+    this.isHovering = true;
+    this.renderer.setStyle(this.innerDivision, 'display', 'flex');
+    this.renderer.setStyle(this.rightDivision, 'background-color', '#e8f4fa');
+  });
 
-//Add mouseout event listener to the right division
-this.renderer.listen(this.rightDivision, 'mouseout', () => {
-  this.hideTimeout = setTimeout(() => {
-  this.isHovering = false;
-  this.renderer.setStyle(this.innerDivision, 'display', 'none');
-  this.renderer.setStyle(this.rightDivision, 'background-color', 'transparent');
-}, 5000);
-});
+  //Add mouseout event listener to the right division
+  this.renderer.listen(this.rightDivision, 'mouseout', () => {
+    this.hideTimeout = setTimeout(() => {
+    this.isHovering = false;
+    this.renderer.setStyle(this.innerDivision, 'display', 'none');
+    this.renderer.setStyle(this.rightDivision, 'background-color', 'transparent');
+  }, 5000);
+  });
 
 this.renderer.listen(this.rightDivision, 'wheel', (event: WheelEvent) => {
   if (this.isHovering && event.deltaY !== 0) {
@@ -121,16 +121,6 @@ this.renderer.listen(this.rightDivision, 'wheel', (event: WheelEvent) => {
 
    // Add mouse event listeners for dragging
    this.renderer.listen(this.innerDivision, 'mousedown', (event: MouseEvent) => {
-    console.log('dragging');
-    const focusedElement = document.activeElement;
-    console.log('focus elemnt',focusedElement);
-    
-    if (focusedElement) {
-        const elementClass = focusedElement.classList.value;
-        console.log('Class of the focused element:', elementClass);
-    } else {
-        console.log('No element is currently focused.');
-    }
     this.startY = event.clientY;
     this.startTop = this.innerDivision.offsetTop;
     this.maxTop = this.rightDivision.clientHeight - this.innerDivision.clientHeight;
@@ -140,7 +130,7 @@ this.renderer.listen(this.rightDivision, 'wheel', (event: WheelEvent) => {
     event.preventDefault(); 
   });
 
-  this.renderer.listen('document', 'mousemove', (event: MouseEvent) => {
+    this.renderer.listen('document', 'mousemove', (event: MouseEvent) => {
     if (this.isDragging && this.startY !== undefined) {
       const deltaY = event.clientY - this.startY;
       const newTop = this.startTop !== undefined ? this.startTop + deltaY : this.innerDivision.offsetTop;
@@ -171,48 +161,47 @@ this.renderer.listen(this.rightDivision, 'wheel', (event: WheelEvent) => {
   });
 
 
-// If the click is on the mouse drag rail, then scroll the content to the clicked position 
-this.renderer.listen(this.rightDivision, 'mousedown', (event: MouseEvent) => {
-  if (!this.isInnerDivisionClicked(event)) {
-    const clickPosition = event.clientY - this.rightDivision.getBoundingClientRect().top;
-    const scrollPosition = (clickPosition / this.rightDivision.clientHeight) * (this.elementRef.nativeElement.scrollHeight - this.elementRef.nativeElement.clientHeight);
-    this.elementRef.nativeElement.scrollTop = scrollPosition;
-  }
-});
+  // If the click is on the mouse drag rail, then scroll the content to the clicked position 
+  this.renderer.listen(this.rightDivision, 'mousedown', (event: MouseEvent) => {
+    if (!this.isInnerDivisionClicked(event)) {
+      const clickPosition = event.clientY - this.rightDivision.getBoundingClientRect().top;
+      const scrollPosition = (clickPosition / this.rightDivision.clientHeight) * (this.elementRef.nativeElement.scrollHeight - this.elementRef.nativeElement.clientHeight);
+      this.elementRef.nativeElement.scrollTop = scrollPosition;
+    }
+  });
 
-// If the click is on the scroll bar, then focus the scroll bar only and prevent scrolling 
-this.renderer.listen(this.innerDivision, 'mousedown', (event: MouseEvent) => {
-  // Prevent propagation to the parent element
-  event.stopPropagation();
-});
-this.renderer.listen(this.innerDivision, 'click', () => {
-  // Focus the inner division
-  const focusedElement = document.activeElement as HTMLElement;
-  if (focusedElement) {
-      focusedElement.blur();
-  }
+  // If the click is on the scroll bar, then focus the scroll bar only and prevent scrolling 
+  this.renderer.listen(this.innerDivision, 'mousedown', (event: MouseEvent) => {
+    // Prevent propagation to the parent element
+    event.stopPropagation();
+  });
+  this.renderer.listen(this.innerDivision, 'click', () => {
+    // Focus the inner division
+    const focusedElement = document.activeElement as HTMLElement;
+    if (focusedElement) {
+        focusedElement.blur();
+    }
 
-  this.innerDivision.focus();
-  console.log('innerdivisonclick');
+    this.innerDivision.focus(); 
+  });
+
+
+    // Add mouse enter and mouse leave event listeners to show/hide the right division
+  this.renderer.listen(this.elementRef.nativeElement, 'mouseenter', () => {
+    clearTimeout(this.hideTimeout); // Clear the timeout to prevent hiding
+    this.renderer.setStyle(this.rightDivision, 'background-color', '#e8f4fa');
+    this.renderer.setStyle(this.innerDivision, 'display', 'flex');
+  });
+
+  this.renderer.listen(this.elementRef.nativeElement, 'mouseleave', () => {
+    this.hideTimeout = setTimeout(() => {
+      this.renderer.setStyle(this.rightDivision, 'background-color', 'transparent');
+      this.renderer.setStyle(this.innerDivision, 'display', 'none');
+    }, 5000); // Set the delay in milliseconds (e.g., 500ms)
+  });
+
+  }
   
-});
-
-
-  // Add mouse enter and mouse leave event listeners to show/hide the right division
-this.renderer.listen(this.elementRef.nativeElement, 'mouseenter', () => {
-  clearTimeout(this.hideTimeout); // Clear the timeout to prevent hiding
-  this.renderer.setStyle(this.rightDivision, 'background-color', '#e8f4fa');
-  this.renderer.setStyle(this.innerDivision, 'display', 'flex');
-});
-
-this.renderer.listen(this.elementRef.nativeElement, 'mouseleave', () => {
-  this.hideTimeout = setTimeout(() => {
-    this.renderer.setStyle(this.rightDivision, 'background-color', 'transparent');
-    this.renderer.setStyle(this.innerDivision, 'display', 'none');
-  }, 5000); // Set the delay in milliseconds (e.g., 500ms)
-});
-
-  }
   // Helper function to check if the inner division is clicked
   private isInnerDivisionClicked(event: MouseEvent): boolean {
   return this.innerDivision.contains(event.target as Node);
